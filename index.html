@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drawing Chat App</title>
+  <!-- Tailwind CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    canvas {
+      border: 2px solid #333;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 flex flex-col h-screen">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between bg-gray-800 p-4">
+    <button id="backButton" class="text-white">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <h1 class="text-white text-xl font-semibold">Drawing Chat</h1>
+    <button id="logout" class="text-white hidden"><i class="fas fa-sign-out-alt"></i> Logout</button>
+  </div>
+
+  <!-- Chat Container -->
+  <div class="flex-grow bg-gray-800 p-4 overflow-y-auto">
+    <div id="chat" class="space-y-4"></div>
+  </div>
+
+  <!-- Drawing Canvas and Toolbar -->
+  <div class="p-4 bg-gray-900 border-t border-gray-700">
+    <div class="flex items-center mb-4">
+      <!-- Color Picker -->
+      <input type="color" id="colorPicker" value="#ffffff" class="mr-2 border rounded">
+      <!-- Brush Size Range Selector -->
+      <label for="brushSize" class="text-white mr-2">Brush Size:</label>
+      <input type="range" id="brushSize" min="2" max="10" value="2" class="mr-2 w-32">
+      <span id="brushSizeLabel" class="text-white">2</span> <!-- Display current size -->
+      <!-- Clear Button -->
+      <button id="clearCanvas" class="bg-yellow-500 text-white font-bold py-2 px-4 rounded hover:bg-yellow-600 flex items-center">
+        <i class="fas fa-eraser mr-1"></i> Clear
+      </button>
+    </div>
+    
+    <canvas id="drawingCanvas" class="w-full h-32 bg-gray-700 rounded"></canvas>
+    
+    <div class="flex items-center mt-4">
+      <button id="sendDrawing" class="ml-2 bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 flex items-center">
+        <i class="fas fa-paper-plane mr-1"></i> Send
+      </button>
+      <button id="deleteAll" class="ml-2 bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 flex items-center">
+        <i class="fas fa-trash mr-1"></i> Delete All Data
+      </button>
+    </div>
+    <button id="googleLogin" class="mt-4 w-full bg-red-600 text-white font-bold py-2 rounded hover:bg-red-700 flex items-center justify-center">
+      <i class="fab fa-google mr-2"></i> Login with Google
+    </button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
+    import { getDatabase, ref, push, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-auth.js";
+
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-nKyC-hpcOj1e0IKMh9E8VqOKvkKr3L4",
+      authDomain: "chatzi-96d60.firebaseapp.com",
+      databaseURL: "https://chatzi-96d60-default-rtdb.firebaseio.com",
+      projectId: "chatzi-96d60",
+      storageBucket: "chatzi-96d60.appspot.com",
+      messagingSenderId: "8860860390",
+      appId: "1:8860860390:android:9583a63e784a116e3c6027",
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const auth = getAuth(app);
+
+    // Canvas and Chat Elements
+    const canvas = document.getElementById("drawingCanvas");
+    const chat = document.getElementById("chat");
+    const sendDrawingButton = document.getElementById("sendDrawing");
+    const deleteAllButton = document.getElementById("deleteAll");
+    const googleLoginButton = document.getElementById("googleLogin");
+    const logoutButton = document.getElementById("logout");
+    const colorPicker = document.getElementById("colorPicker");
+    const brushSizeInput = document.getElementById("brushSize");
+    const clearCanvasButton = document.getElementById("clearCanvas");
+    const brushSizeLabel = document.getElementById("brushSizeLabel");
+
+    const context = canvas.getContext("2d");
+    let isDrawing = false;
+    let userName = '';
+    let drawingColor = '#ffffff';
+    let drawingSize = parseInt(brushSizeInput.value); // Initial brush size from input
+
+    // Handle Drawing on Canvas
+    canvas.addEventListener("mousedown", () => (isDrawing = true));
+canvas.addEventListener("mouseup", () => (isDrawing = false));
+canvas.addEventListener("mousemove", draw);
+
+function draw(event) {
+    if (!isDrawing) return;
+    context.lineWidth = drawingSize;
+    context.lineCap = "round";
+    context.strokeStyle = drawingColor; // Use selected color
+  
+    // Adjust coordinates for mouse events
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+  
+    context.lineTo(x, y);
+    context.stroke();
+    context.beginPath();
+    context.moveTo(x, y);
+  }
+  
+    function clearCanvas() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.beginPath();
+    }
+
+    canvas.addEventListener("touchstart", (event) => {
+        isDrawing = true;
+        drawTouch(event);
+      });
+
+
+      canvas.addEventListener("touchend", () => (isDrawing = false));
+canvas.addEventListener("touchmove", drawTouch);
+
+    // Event Listeners for Tool Options
+    colorPicker.addEventListener("input", (event) => {
+      drawingColor = event.target.value;
+    });
+
+    brushSizeInput.addEventListener("input", (event) => {
+      drawingSize = parseInt(event.target.value);
+      brushSizeLabel.textContent = drawingSize; // Update displayed brush size
+    });
+
+
+    function drawTouch(event) {
+        event.preventDefault(); // Prevent scrolling when drawing
+        if (!isDrawing) return;
+        
+        const touch = event.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+      
+        context.lineWidth = drawingSize;
+        context.lineCap = "round";
+        context.strokeStyle = drawingColor; // Use selected color
+      
+        context.lineTo(x, y);
+        context.stroke();
+        context.beginPath();
+        context.moveTo(x, y);
+      }
+    // Clear Canvas Button
+    clearCanvasButton.addEventListener("click", clearCanvas);
+
+    // Save drawing as a base64 image and send to Firebase
+    sendDrawingButton.addEventListener("click", () => {
+      const dataURL = canvas.toDataURL();
+      const chatRef = ref(database, "drawings");
+      push(chatRef, { drawing: dataURL, name: userName || 'Anonymous' });
+      clearCanvas();
+    });
+
+    // Display incoming drawings
+    const chatRef = ref(database, "drawings");
+    onChildAdded(chatRef, (snapshot) => {
+      const drawingData = snapshot.val();
+      const img = document.createElement("img");
+      img.src = drawingData.drawing;
+      img.classList.add("w-32", "h-32", "rounded-lg"); // Set size for smaller display
+
+      const nameTag = document.createElement("p");
+      nameTag.classList.add("font-bold", "text-white");
+      nameTag.textContent = drawingData.name;
+
+      const messageContainer = document.createElement("div");
+      messageContainer.classList.add("bg-gray-700", "p-2", "rounded-lg", "flex", "flex-col", "items-start");
+      messageContainer.appendChild(nameTag);
+      messageContainer.appendChild(img);
+      chat.appendChild(messageContainer);
+      chat.scrollTop = chat.scrollHeight; // Auto-scroll to the latest drawing
+    });
+
+    // Google Login
+    const provider = new GoogleAuthProvider();
+
+    googleLoginButton.addEventListener("click", async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        userName = user.displayName || 'Anonymous'; // Use display name or 'Anonymous'
+        localStorage.setItem("userName", userName); // Store username in localStorage
+        updateUI();
+      } catch (error) {
+        console.error("Error during Google login:", error);
+      }
+    });
+
+    // Logout Functionality
+    logoutButton.addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        userName = '';
+        localStorage.removeItem("userName"); // Remove username from localStorage
+        updateUI();
+      } catch (error) {
+        console.error("Error during logout:", error);
+      }
+    });
+
+    // Delete All Drawings
+    deleteAllButton.addEventListener("click", async () => {
+      if (confirm("Are you sure you want to delete all drawings?")) {
+        const drawingsRef = ref(database, "drawings");
+        remove(drawingsRef);
+      }
+    });
+
+    function updateUI() {
+      if (userName) {
+        logoutButton.classList.remove("hidden");
+        googleLoginButton.classList.add("hidden");
+      } else {
+        logoutButton.classList.add("hidden");
+        googleLoginButton.classList.remove("hidden");
+      }
+    }
+
+    // Initialize UI based on existing user data
+    window.onload = () => {
+      userName = localStorage.getItem("userName") || '';
+      updateUI();
+    };
+  </script>
+</body>
+</html>
