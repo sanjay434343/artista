@@ -9,55 +9,106 @@
   <!-- Font Awesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    body {
+      background-color: #B6FFA1;
+      font-family: 'Arial', sans-serif;
+    }
     canvas {
       border: 2px solid #333;
+      border-radius: 8px;
+      background-color: #f8f9fa; /* Light background for the canvas */
+      cursor: crosshair; /* Change cursor for drawing */
+    }
+    .chat-container {
+      background-color: #ffffff00;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .chat-message {
+      background-color: #e2e8f0; /* Light gray background for messages */
+      border-radius: 8px;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .chat-message img {
+      margin-top: 0.5rem;
+      max-width: 100%;
+      border-radius: 4px;
     }
   </style>
 </head>
-<body class="bg-gray-900 flex flex-col h-screen">
+<body class="flex flex-col h-screen">
 
   <!-- Header -->
-  <div class="flex items-center justify-between bg-gray-800 p-4">
-    <button id="backButton" class="text-white">
+  <div class="flex items-center justify-between p-4 bg-green-600 text-white shadow">
+    <button id="backButton" class="focus:outline-none">
       <i class="fas fa-arrow-left"></i>
     </button>
-    <h1 class="text-white text-xl font-semibold">Drawing Chat</h1>
-    <button id="logout" class="text-white hidden"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    <h1 class="text-xl font-semibold">Artistra</h1>
+    <button id="googleLogin" class="ml-2 bg-gray-200 text-black font-bold py-2 px-4 rounded hover:bg-gray-100 flex items-center" >
+        <i class="fab fa-google"></i>
+      </button>
+    
+    
   </div>
 
   <!-- Chat Container -->
-  <div class="flex-grow bg-gray-800 p-4 overflow-y-auto">
-    <div id="chat" class="space-y-4"></div>
+  <div class="flex-grow p-4 overflow-y-auto">
+    <div id="chat" class="space-y-4 chat-container"></div>
   </div>
 
   <!-- Drawing Canvas and Toolbar -->
-  <div class="p-4 bg-gray-900 border-t border-gray-700">
-    <div class="flex items-center mb-4">
-      <!-- Color Picker -->
-      <input type="color" id="colorPicker" value="#ffffff" class="mr-2 border rounded">
-      <!-- Brush Size Range Selector -->
-      <label for="brushSize" class="text-white mr-2">Brush Size:</label>
-      <input type="range" id="brushSize" min="2" max="10" value="2" class="mr-2 w-32">
-      <span id="brushSizeLabel" class="text-white">2</span> <!-- Display current size -->
-      <!-- Clear Button -->
-      <button id="clearCanvas" class="bg-yellow-500 text-white font-bold py-2 px-4 rounded hover:bg-yellow-600 flex items-center">
-        <i class="fas fa-eraser mr-1"></i> Clear
-      </button>
+  <div class="p-4 b">
+    
+   
+    <div id="myModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center">
+        <div class="bg-white rounded-lg p-6 shadow-lg w-96">
+            <h2 class="text-lg font-semibold mb-4">Settings</h2>
+    
+            <!-- Logout button (hidden initially) -->
+            
+    
+            <!-- Color Picker and Brush Size controls -->
+            <div class="flex items-center mb-4">
+                <input type="color" id="colorPicker" value="#000000FF" class="mr-2 border rounded">
+                <label for="brushSize" class="mr-2">Brush Size:</label>
+                <input type="range" id="brushSize" min="2" max="10" value="2" class="mr-2 w-32">
+                <span id="brushSizeLabel" class="ml-2">2</span>
+            </div>
+    
+            <!-- Close button -->
+            <button id="closeModal" class="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                Close
+            </button>
+        </div>
     </div>
     
-    <canvas id="drawingCanvas" class="w-full h-32 bg-gray-700 rounded"></canvas>
+    <canvas id="drawingCanvas" class="w-full h-32 rounded"></canvas>
     
-    <div class="flex items-center mt-4">
-      <button id="sendDrawing" class="ml-2 bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 flex items-center">
-        <i class="fas fa-paper-plane mr-1"></i> Send
-      </button>
-      <button id="deleteAll" class="ml-2 bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 flex items-center">
-        <i class="fas fa-trash mr-1"></i> Delete All Data
-      </button>
+    
+    <div class="flex items-center mb-4" style="margin-top: 10px; margin-bottom:-10px; margin-left:10px;">
+
+        <button id="sendDrawing" class="ml-2  text-green font-bold py-2 px-4 rounded  flex items-center">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+          <button id="clearCanvas" class="ml-2  text-black font-bold py-2 px-4 rounded  flex items-center">
+            <i class="fas fa-eraser"></i>
+          </button>
+        <button id="openModal" class="ml-2  text-black font-bold py-2 px-4 rounded  flex items-center">
+            <i class="fas fa-cog"></i>
+            
+        </button>
+        <button id="deleteAll" class="ml-2  text-black font-bold py-2 px-4 rounded  flex items-center">
+            <i class="fas fa-trash"></i>
+          </button>
+          <button id="logout" class="ml-2  text-black font-bold py-2 px-4 rounded  flex items-center"><i class="fas fa-sign-out-alt"></i></button>
+     
+  
+      
     </div>
-    <button id="googleLogin" class="mt-4 w-full bg-red-600 text-white font-bold py-2 rounded hover:bg-red-700 flex items-center justify-center">
-      <i class="fab fa-google mr-2"></i> Login with Google
-    </button>
   </div>
 
   <script type="module">
@@ -95,156 +146,223 @@
 
     const context = canvas.getContext("2d");
     let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
     let userName = '';
-    let drawingColor = '#ffffff';
+    let drawingColor = '#000000FF';
     let drawingSize = parseInt(brushSizeInput.value); // Initial brush size from input
 
     // Handle Drawing on Canvas
-    canvas.addEventListener("mousedown", () => (isDrawing = true));
-canvas.addEventListener("mouseup", () => (isDrawing = false));
-canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("mousedown", (event) => {
+      isDrawing = true;
+      [lastX, lastY] = getMousePosition(event); // Get initial position
+    });
 
-function draw(event) {
-    if (!isDrawing) return;
-    context.lineWidth = drawingSize;
-    context.lineCap = "round";
-    context.strokeStyle = drawingColor; // Use selected color
-  
-    // Adjust coordinates for mouse events
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-  
-    context.lineTo(x, y);
-    context.stroke();
-    context.beginPath();
-    context.moveTo(x, y);
-  }
-  
+    canvas.addEventListener("mouseup", () => {
+      isDrawing = false;
+      context.beginPath(); // Start a new path
+    });
+
+    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("touchstart", (event) => {
+      isDrawing = true;
+      const [x, y] = getTouchPosition(event);
+      lastX = x;
+      lastY = y;
+      drawTouch(event);
+    });
+    canvas.addEventListener("touchend", () => {
+      isDrawing = false;
+      context.beginPath(); // Start a new path
+    });
+    canvas.addEventListener("touchmove", drawTouch);
+
+    function draw(event) {
+      if (!isDrawing) return;
+
+      const [x, y] = getMousePosition(event);
+      context.lineWidth = drawingSize;
+      context.lineCap = "round";
+      context.strokeStyle = drawingColor; // Use selected color
+
+      // Draw line from last position to current position
+      context.beginPath();
+      context.moveTo(lastX, lastY);
+      context.lineTo(x, y);
+      context.stroke();
+
+      // Update last position
+      [lastX, lastY] = [x, y];
+    }
+
+    function drawTouch(event) {
+      event.preventDefault(); // Prevent scrolling when drawing
+      if (!isDrawing) return;
+
+      const [x, y] = getTouchPosition(event);
+      context.lineWidth = drawingSize;
+      context.lineCap = "round";
+      context.strokeStyle = drawingColor; // Use selected color
+
+      // Draw line from last position to current position
+      context.beginPath();
+      context.moveTo(lastX, lastY);
+      context.lineTo(x, y);
+      context.stroke();
+
+      // Update last position
+      [lastX, lastY] = [x, y];
+    }
+
+    function getMousePosition(event) {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      return [x, y];
+    }
+
+    function getTouchPosition(event) {
+      const touch = event.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      return [x, y];
+    }
+
     function clearCanvas() {
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.beginPath();
     }
 
-    canvas.addEventListener("touchstart", (event) => {
-        isDrawing = true;
-        drawTouch(event);
-      });
-
-
-      canvas.addEventListener("touchend", () => (isDrawing = false));
-canvas.addEventListener("touchmove", drawTouch);
-
-    // Event Listeners for Tool Options
-    colorPicker.addEventListener("input", (event) => {
-      drawingColor = event.target.value;
+    // Event Listeners for UI Controls
+    brushSizeInput.addEventListener("input", () => {
+      drawingSize = parseInt(brushSizeInput.value);
+      brushSizeLabel.textContent = drawingSize; // Update label
     });
 
-    brushSizeInput.addEventListener("input", (event) => {
-      drawingSize = parseInt(event.target.value);
-      brushSizeLabel.textContent = drawingSize; // Update displayed brush size
+    colorPicker.addEventListener("input", () => {
+      drawingColor = colorPicker.value; // Get selected color
     });
 
+    sendDrawingButton.addEventListener("click", () => {
+      const drawingData = canvas.toDataURL("image/png");
+      sendMessage(drawingData);
+    });
 
-    function drawTouch(event) {
-        event.preventDefault(); // Prevent scrolling when drawing
-        if (!isDrawing) return;
-        
-        const touch = event.touches[0];
-        const rect = canvas.getBoundingClientRect();
-        const x = touch.clientX - rect.left;
-        const y = touch.clientY - rect.top;
-      
-        context.lineWidth = drawingSize;
-        context.lineCap = "round";
-        context.strokeStyle = drawingColor; // Use selected color
-      
-        context.lineTo(x, y);
-        context.stroke();
-        context.beginPath();
-        context.moveTo(x, y);
-      }
-    // Clear Canvas Button
     clearCanvasButton.addEventListener("click", clearCanvas);
 
-    // Save drawing as a base64 image and send to Firebase
-    sendDrawingButton.addEventListener("click", () => {
-      const dataURL = canvas.toDataURL();
-      const chatRef = ref(database, "drawings");
-      push(chatRef, { drawing: dataURL, name: userName || 'Anonymous' });
-      clearCanvas();
-    });
-
-    // Display incoming drawings
-    const chatRef = ref(database, "drawings");
-    onChildAdded(chatRef, (snapshot) => {
-      const drawingData = snapshot.val();
-      const img = document.createElement("img");
-      img.src = drawingData.drawing;
-      img.classList.add("w-32", "h-32", "rounded-lg"); // Set size for smaller display
-
-      const nameTag = document.createElement("p");
-      nameTag.classList.add("font-bold", "text-white");
-      nameTag.textContent = drawingData.name;
-
-      const messageContainer = document.createElement("div");
-      messageContainer.classList.add("bg-gray-700", "p-2", "rounded-lg", "flex", "flex-col", "items-start");
-      messageContainer.appendChild(nameTag);
-      messageContainer.appendChild(img);
-      chat.appendChild(messageContainer);
-      chat.scrollTop = chat.scrollHeight; // Auto-scroll to the latest drawing
-    });
-
-    // Google Login
-    const provider = new GoogleAuthProvider();
-
-    googleLoginButton.addEventListener("click", async () => {
-      try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        userName = user.displayName || 'Anonymous'; // Use display name or 'Anonymous'
-        localStorage.setItem("userName", userName); // Store username in localStorage
-        updateUI();
-      } catch (error) {
-        console.error("Error during Google login:", error);
-      }
-    });
-
-    // Logout Functionality
-    logoutButton.addEventListener("click", async () => {
-      try {
-        await signOut(auth);
-        userName = '';
-        localStorage.removeItem("userName"); // Remove username from localStorage
-        updateUI();
-      } catch (error) {
-        console.error("Error during logout:", error);
-      }
-    });
-
-    // Delete All Drawings
     deleteAllButton.addEventListener("click", async () => {
-      if (confirm("Are you sure you want to delete all drawings?")) {
-        const drawingsRef = ref(database, "drawings");
-        remove(drawingsRef);
-      }
-    });
+        if (confirm("Are you sure you want to delete all drawings?")) {
+          const drawingsRef = ref(database, "drawings");
+          remove(drawingsRef);
+        }
+      });
 
-    function updateUI() {
-      if (userName) {
-        logoutButton.classList.remove("hidden");
-        googleLoginButton.classList.add("hidden");
-      } else {
-        logoutButton.classList.add("hidden");
-        googleLoginButton.classList.remove("hidden");
-      }
+      const provider = new GoogleAuthProvider();
+
+      googleLoginButton.addEventListener("click", async () => {
+        try {
+          const result = await signInWithPopup(auth, provider);
+          const user = result.user;
+          userName = user.displayName || 'Anonymous'; // Use display name or 'Anonymous'
+          localStorage.setItem("userName", userName); // Store username in localStorage
+          updateUI();
+        } catch (error) {
+          console.error("Error during Google login:", error);
+        }
+      });
+  
+  
+      logoutButton.addEventListener("click", async () => {
+        try {
+          await signOut(auth);
+          userName = '';
+          localStorage.removeItem("userName"); // Remove username from localStorage
+          updateUI();
+        } catch (error) {
+          console.error("Error during logout:", error);
+        }
+      });
+
+    // Send message to Firebase
+    function sendMessage(data) {
+      const messagesRef = ref(database, 'drawings/');
+      push(messagesRef, {
+        username: userName,
+        drawing: data
+      });
     }
 
-    // Initialize UI based on existing user data
-    window.onload = () => {
-      userName = localStorage.getItem("userName") || '';
-      updateUI();
-    };
+    // Listen for new messages from Firebase
+    onChildAdded(ref(database, 'drawings/'), (data) => {
+      const message = data.val();
+      displayMessage(message);
+    });
+
+    // Display messages in chat
+    function displayMessage(message) {
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add("chat-message");
+      const userSpan = document.createElement("strong");
+      userSpan.textContent = message.username;
+      messageDiv.appendChild(userSpan);
+      
+      const img = document.createElement("img");
+      img.src = message.drawing;
+      messageDiv.appendChild(img);
+      
+      chat.appendChild(messageDiv);
+      chat.scrollTop = chat.scrollHeight; // Scroll to bottom
+    }
+
+    // Canvas size
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth * 0.9; // Make canvas responsive
+      canvas.height = 200; // Fixed height
+    });
+
+
+    function updateUI() {
+        if (userName) {
+          logoutButton.classList.remove("hidden");
+          googleLoginButton.classList.add("hidden");
+        } else {
+          logoutButton.classList.add("hidden");
+          googleLoginButton.classList.remove("hidden");
+        }
+      }
+
+      
+    // Initialize canvas size
+    canvas.width = window.innerWidth * 0.9; // Make canvas responsive
+    canvas.height = 200; // Fixed height
+
+    const modal = document.getElementById('myModal');
+        const openModalBtn = document.getElementById('openModal');
+        const closeModalBtn = document.getElementById('closeModal');
+
+        // Open modal function
+        openModalBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+        });
+
+        // Close modal function
+        closeModalBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside of the modal content
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+        window.onload = () => {
+            userName = localStorage.getItem("userName") || '';
+            updateUI();
+          };
+
+
   </script>
 </body>
 </html>
