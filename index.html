@@ -11,21 +11,30 @@
   <style>
     body {
       background-color: #B6FFA1;
-      font-family: 'Arial', sans-serif;
+      font-family: 'Arial', sans-serif;overflow: hidden;
     }
     canvas {
       border: 2px solid #333;
       border-radius: 8px;
-      background-color: #f8f9fa; /* Light background for the canvas */
+      background-color: #8dff8fd3; /* Light background for the canvas */
       cursor: crosshair; /* Change cursor for drawing */
     }
+
+    .can{
+        height: 170px;
+    }
     .chat-container {
+        display: grid;
+        align-items: center;
+        justify-content: center;
       background-color: #ffffff00;
       border-radius: 8px;
       padding: 1rem;
+      overflow-y: hidden;
     }
     .chat-message {
-      background-color: #e2e8f0; /* Light gray background for messages */
+      font-size: 8px;
+      background-color: #f0fff3; /* Light gray background for messages */
       border-radius: 8px;
       padding: 0.5rem;
       margin-bottom: 0.5rem;
@@ -35,7 +44,7 @@
     }
     .chat-message img {
       margin-top: 0.5rem;
-      max-width: 100%;
+      max-width: 50%;
       border-radius: 4px;
     }
   </style>
@@ -86,25 +95,25 @@
         </div>
     </div>
     
-    <canvas id="drawingCanvas" class="w-full h-32 rounded"></canvas>
+    <canvas id="drawingCanvas" class="w-full rounded can"></canvas>
     
     
     <div class="flex items-center mb-4" style="margin-top: 10px; margin-bottom:-10px; margin-left:10px;">
 
-        <button id="sendDrawing" class="ml-2  text-green font-bold py-2 px-4 rounded  flex items-center">
+        <button id="sendDrawing" class="ml-2  text-green-800 font-bold py-2 px-4 rounded  flex items-center">
             <i class="fas fa-paper-plane"></i>
           </button>
-          <button id="clearCanvas" class="ml-2  text-black font-bold py-2 px-4 rounded  flex items-center">
+          <button id="clearCanvas" class="ml-2  text-green-800 font-bold py-2 px-4 rounded  flex items-center">
             <i class="fas fa-eraser"></i>
           </button>
-        <button id="openModal" class="ml-2  text-black font-bold py-2 px-4 rounded  flex items-center">
+        <button id="openModal" class="ml-2  text-green-800 font-bold py-2 px-4 rounded  flex items-center">
             <i class="fas fa-cog"></i>
             
         </button>
-        <button id="deleteAll" class="ml-2  text-black font-bold py-2 px-4 rounded  flex items-center">
+        <button id="deleteAll" class="ml-2  text-green-800 font-bold py-2 px-4 rounded  flex items-center">
             <i class="fas fa-trash"></i>
           </button>
-          <button id="logout" class="ml-2  text-black font-bold py-2 px-4 rounded  flex items-center"><i class="fas fa-sign-out-alt"></i></button>
+          <button id="logout" class="ml-2  text-green-800 font-bold py-2 px-4 rounded  flex items-center"><i class="fas fa-sign-out-alt"></i></button>
      
   
       
