@@ -13,172 +13,170 @@
   <style>
     body {
       background-color: #B6FFA1;
-      font-family: 'Arial', sans-serif;overflow: hidden;
-      height:100vh;
-    }
-    canvas {
-     background-color: #ffffff; /* Light background for the canvas */
-    border: 2px solid #333; /* Optional border */
-    border-radius: 8px; /* Rounded corners */
-    width: 100%; /* Full width */
-    height: 400px; /* Default height; you can adjust this */
-    max-height: 100vh; /* Limit the height to the viewport height */
-    position: relative; /* Allows for stacking with z-index */
+      font-family: 'Arial', sans-serif;
+      overflow: hidden;
+      margin: 0; /* Remove default margin */
+      height: 100vh; /* Full height */
+  }
+  
+  canvas {
+      background-color: #ffffff; /* Light background for the canvas */
+      border: 2px solid #333; /* Optional border */
+      border-radius: 8px; /* Rounded corners */
+      width: 100%; /* Full width */
+      height: 40vh; /* Dynamic height based on viewport */
+      max-height: 60vh; /* Limit height to 60% of viewport */
+      position: relative; /* Allows for stacking with z-index */
   }
   
   .can {
       background-color: #059669;
-      height: 170px;
+      height: auto; /* Allow auto height */
       z-index: 0; /* Set to zero or higher if needed */
       position: relative;
   }
   
-    .chat-container {
+  .chat-container {
       display: grid;
       align-items: center;
       justify-content: center;
-        background-color: #ffffff00;
       border-radius: 8px;
       padding: 1rem;
-margin-bottom: 30px;
-    }
-
-
-    .chat-message {
-      display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-      border: 1px solid black;
-
-      font-size: 8px;
-      margin: 15px;
-      background-color: #c4ffcf8a; /* Light gray background for messages */
-      border-radius: 8px;
-      padding: 0.5rem;
-      margin-bottom: 0.5rem;
+      margin-bottom: 20px;
+      max-height: 25vh; /* Limit height for better mobile view */
+      overflow-y: hidden; /* Allow scrolling */
+  }
+  
+  .chat-message {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-    }
-   .chat-message img {
-    position: relative;
-    left: 27%;
-    margin-top: 0.5rem;
-    max-width: 50%;
-    border-radius: 4px;
-
-}
-
-
-    .tools{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 10px;
-    }
-
-    #colorPicker{
-width: 100%;
-height: 30px;
-border-radius: 30px;
-    }
-
-    .section{
+      justify-content: center;
+      text-align: center;
+      border: 1px solid black;
+      font-size: 14px; /* Increased font size for readability */
+      margin: 5px 0; /* Reduce margins */
+      background-color: rgba(196, 255, 207, 0.8); /* Light gray background for messages */
+      border-radius: 8px;
+      padding: 0.5rem;
+  }
+  
+  .chat-message img {
+      position: relative;
+      left: 0; /* Centering the image */
+      margin-top: 0.5rem;
+      max-width: 80%; /* Allow more width on smaller screens */
+      border-radius: 4px;
+  }
+  
+  .tools {
+      display: flex;
+      flex-direction: column; /* Stack vertically */
+      align-items: center; /* Center align items */
+      justify-content: center; /* Center justify items */
+      position: absolute; /* Use absolute positioning */
+      bottom: 10px; /* Position 10px from the bottom */
+      left: 50%; /* Center horizontally */
+      transform: translateX(-50%); /* Offset to truly center */
+      gap: 10px; /* Added gap for better spacing */
+  }
+  
+  #colorPicker {
+      width: 100%; /* Full width */
+      height: 30px;
+      border-radius: 30px;
+  }
+  
+  .section {
       width: 90%;
       background-color: #f9f9f9;
-      padding: 15px;
+      padding: 15px; /* Adjusted padding */
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 10px;
-    }
-
-
-    /* Container Styling */
-#brushSize {
-  -webkit-appearance: none; /* Remove default styling in Webkit browsers */
-  appearance: none;
-  width: 100%; /* Full width */
-  height: 5px; /* Adjust track height */
-  background: #ddd; /* Track color */
-  border-radius: 5px; /* Rounded edges */
-  outline: none; /* Remove outline */
-  transition: background 0.3s ease-in-out; /* Smooth transition for track color */
-}
-
-#brushSize:hover {
-  background: #c8c8c8; /* Darker track on hover */
-}
-
-/* Thumb Styling */
-#brushSize::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Remove default styling */
-  appearance: none;
-  width: 5px; /* Thumb width */
-  height: 30px; /* Thumb height */
-  border-radius: 2px  ; /* Rounded thumb */
-
-  background-color: #4CAF50; /* Thumb color */
-  cursor: pointer; /* Pointer cursor */
-  transition: background 0.3s ease-in-out; /* Smooth transition */
-}
-
-#brushSize::-webkit-slider-thumb:hover {
-  background-color: #388E3C; /* Darker thumb on hover */
-}
-
-/* Firefox Thumb Styling */
-#brushSize::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background-color: #4CAF50;
-  cursor: pointer;
-  transition: background 0.3s ease-in-out;
-}
-
-#brushSize::-moz-range-thumb:hover {
-  background-color: #388E3C;
-}
-
-/* Track for Firefox */
-#brushSize::-moz-range-track {
-  background: #ddd;
-  border-radius: 5px;
-  height: 8px;
-}
-
-.brush{
-  color: #059669;
-}
-
-.tool{
-  position: absolute;
-  bottom: 32%;
-  left: 39%;
-  margin: 10px;
-  letter-spacing: 10px;
-
-}
-
-@media screen and (max-width: 768px) {
-  .tool{
-    bottom: 20%;
-    left: 5%;
-    gap: 30px;
   }
-
-  .tool i{
-    font-size: 25px;
+  
+  #brushSize {
+      -webkit-appearance: none; /* Remove default styling in Webkit browsers */
+      appearance: none;
+      width: 100%; /* Full width */
+      height: 5px; /* Adjust track height */
+      background: #ddd; /* Track color */
+      border-radius: 5px; /* Rounded edges */
+      outline: none; /* Remove outline */
+      transition: background 0.3s ease-in-out; /* Smooth transition for track color */
   }
-
-  .chat-container {
-height: 30px;
+  
+  #brushSize:hover {
+      background: #c8c8c8; /* Darker track on hover */
   }
-}
+  
+  #brushSize::-webkit-slider-thumb {
+      -webkit-appearance: none; /* Remove default styling */
+      appearance: none;
+      width: 10px; /* Increased thumb width */
+      height: 30px; /* Thumb height */
+      border-radius: 5px; /* Rounded thumb */
+      background-color: #4CAF50; /* Thumb color */
+      cursor: pointer; /* Pointer cursor */
+      transition: background 0.3s ease-in-out; /* Smooth transition */
+  }
+  
+  #brushSize::-webkit-slider-thumb:hover {
+      background-color: #388E3C; /* Darker thumb on hover */
+  }
+  
+  #brushSize::-moz-range-thumb {
+      width: 10px; /* Increased thumb width */
+      height: 10px;
+      border-radius: 50%;
+      background-color: #4CAF50;
+      cursor: pointer;
+      transition: background 0.3s ease-in-out;
+  }
+  
+  #brushSize::-moz-range-thumb:hover {
+      background-color: #388E3C;
+  }
+  
+  #brushSize::-moz-range-track {
+      background: #ddd;
+      border-radius: 5px;
+      height: 8px;
+  }
+  
+  .brush {
+      color: #059669;
+  }
+  
+  .tool {
+      margin: 0; /* Remove margin for tool icons */
+  }
+  
+  @media screen and (max-width: 768px) {
+      .tool {
+          bottom: 5%; /* Closer to bottom for mobile */
+          left: 0%; /* Center horizontally */
+          gap: 35px; /* Reduce gap for mobile */
+      }
+  
+      .tool i {
+          font-size: 20px; /* Smaller icons for mobile */
+      }
+  
+      .chat-container {
+        margin: 20px;
+          max-height: 80vh; /* Increase height for better visibility */
+          height: auto; /* Allow auto height */
+      }
+  
+      .chat-message {
+          font-size: 12px; /* Slightly smaller font size for mobile */
+          margin: 5px 0; /* Further reduced margins */
+      }
+  }
+  
   </style>
 </head>
 <body class="flex flex-col h-screen">
