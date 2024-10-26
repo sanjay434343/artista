@@ -186,9 +186,7 @@ z-index: 1000;
   <div class="flex items-center justify-between p-4 bg-green-600 text-white shadow">
    
     <h1 class="text-xl font-semibold">Artistra</h1>
-    <button id="googleLogin" class="ml-2 bg-gray-200 text-black font-bold py-2 px-4 rounded hover:bg-gray-100 flex items-center" >
-        <i class="fab fa-google"></i>
-      </button>
+   
     
     
   </div>
@@ -230,9 +228,7 @@ z-index: 1000;
             <!-- Close button -->
             <button id="closeModal" class="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
                 Close
-            </button>
-<button id="logout" class="mt-4 px-2 py-2 bg-red-500 text-white rounded hover:bg-red-600 ">Logout</button>
-
+           
         </div>
     </div>
     
@@ -407,31 +403,7 @@ z-index: 1000;
         }
       });
 
-      const provider = new GoogleAuthProvider();
-
-      googleLoginButton.addEventListener("click", async () => {
-        try {
-          const result = await signInWithPopup(auth, provider);
-          const user = result.user;
-          userName = user.displayName || 'Anonymous'; // Use display name or 'Anonymous'
-          localStorage.setItem("userName", userName); // Store username in localStorage
-          updateUI();
-        } catch (error) {
-          console.error("Error during Google login:", error);
-        }
-      });
   
-  
-      logoutButton.addEventListener("click", async () => {
-        try {
-          await signOut(auth);
-          userName = '';
-          localStorage.removeItem("userName"); // Remove username from localStorage
-          updateUI();
-        } catch (error) {
-          console.error("Error during logout:", error);
-        }
-      });
 
     // Send message to Firebase
     function sendMessage(data) {
@@ -506,10 +478,7 @@ z-index: 1000;
                 modal.classList.add('hidden');
             }
         });
-        window.onload = () => {
-            userName = localStorage.getItem("userName") || '';
-            updateUI();
-          };
+       
 
 
   </script>
