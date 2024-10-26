@@ -40,8 +40,10 @@
         background-color: #ffffff00;
       border-radius: 8px;
       padding: 1rem;
-
+margin-bottom: 30px;
     }
+
+
     .chat-message {
       display: flex;
         flex-direction: row;
@@ -62,7 +64,7 @@
     }
    .chat-message img {
     position: relative;
-    left: 25%;
+    left: 27%;
     margin-top: 0.5rem;
     max-width: 50%;
     border-radius: 4px;
@@ -155,9 +157,27 @@ border-radius: 30px;
 
 .tool{
   position: absolute;
-  bottom: 20%;
-  left: 70px;
+  bottom: 32%;
+  left: 39%;
   margin: 10px;
+  letter-spacing: 10px;
+
+}
+
+@media screen and (max-width: 768px) {
+  .tool{
+    bottom: 20%;
+    left: 5%;
+    gap: 30px;
+  }
+
+  .tool i{
+    font-size: 25px;
+  }
+
+  .chat-container {
+height: 30px;
+  }
 }
   </style>
 </head>
