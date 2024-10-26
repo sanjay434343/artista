@@ -8,6 +8,8 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
   <!-- Font Awesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <style>
     body {
       background-color: #B6FFA1;
@@ -15,7 +17,7 @@
       height:100vh;
     }
     canvas {
-      margin-top:-70px;
+      margin-top:-90px;
       border: 2px solid #333;
       border-radius: 8px;
       background-color: #8dff8fd3; /* Light background for the canvas */
@@ -26,17 +28,28 @@
         height: 170px;
     }
     .chat-container {
-        display: grid;
+        display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        text-align: center;
       background-color: #ffffff00;
       border-radius: 8px;
       padding: 1rem;
       overflow-y: hidden;
+
     }
     .chat-message {
+      display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      border: 1px solid black;
+
       font-size: 8px;
-      background-color: #f0fff3; /* Light gray background for messages */
+      margin: 15px;
+      background-color: #c4ffcf8a; /* Light gray background for messages */
       border-radius: 8px;
       padding: 0.5rem;
       margin-bottom: 0.5rem;
@@ -45,10 +58,95 @@
       align-items: flex-start;
     }
     .chat-message img {
+      position: relative;
+      left: 25%;
       margin-top: 0.5rem;
       max-width: 50%;
       border-radius: 4px;
     }
+
+    .tools{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    }
+
+    #colorPicker{
+width: 100%;
+height: 30px;
+border-radius: 30px;
+    }
+
+    .section{
+      width: 90%;
+      background-color: #f9f9f9;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px;
+    }
+
+
+    /* Container Styling */
+#brushSize {
+  -webkit-appearance: none; /* Remove default styling in Webkit browsers */
+  appearance: none;
+  width: 100%; /* Full width */
+  height: 5px; /* Adjust track height */
+  background: #ddd; /* Track color */
+  border-radius: 5px; /* Rounded edges */
+  outline: none; /* Remove outline */
+  transition: background 0.3s ease-in-out; /* Smooth transition for track color */
+}
+
+#brushSize:hover {
+  background: #c8c8c8; /* Darker track on hover */
+}
+
+/* Thumb Styling */
+#brushSize::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Remove default styling */
+  appearance: none;
+  width: 5px; /* Thumb width */
+  height: 30px; /* Thumb height */
+  border-radius: 2px  ; /* Rounded thumb */
+
+  background-color: #4CAF50; /* Thumb color */
+  cursor: pointer; /* Pointer cursor */
+  transition: background 0.3s ease-in-out; /* Smooth transition */
+}
+
+#brushSize::-webkit-slider-thumb:hover {
+  background-color: #388E3C; /* Darker thumb on hover */
+}
+
+/* Firefox Thumb Styling */
+#brushSize::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #4CAF50;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+#brushSize::-moz-range-thumb:hover {
+  background-color: #388E3C;
+}
+
+/* Track for Firefox */
+#brushSize::-moz-range-track {
+  background: #ddd;
+  border-radius: 5px;
+  height: 8px;
+}
+
+.brush{
+  color: #059669;
+}
   </style>
 </head>
 <body class="flex flex-col h-screen">
@@ -81,19 +179,31 @@
     
             <!-- Logout button (hidden initially) -->
             
-    
-            <!-- Color Picker and Brush Size controls -->
-            <div class="flex items-center mb-4">
-                <input type="color" id="colorPicker" value="#000000FF" class="mr-2 border rounded">
-                <label for="brushSize" class="mr-2">Brush Size:</label>
-                <input type="range" id="brushSize" min="2" max="10" value="2" class="mr-2 w-32">
-                <span id="brushSizeLabel" class="ml-2">2</span>
-            </div>
-    
+    <div class="tools">
+      <div class="section">
+      <input type="color" id="colorPicker" value="#000000FF" class="mr-2 border rounded">
+      </div>
+      <div class="section">
+        <label for="brushSize" class="mr-2 brush"><i class="fa-solid fa-paintbrush"></i></label>
+      <input type="range" id="brushSize" min="2" max="100" value="1" class="mr-2 w-32">
+      <span id="brushSizeLabel" class="ml-2">2</span>
+      </div>
+      
+
+
+
+
+
+
+    </div>
+           
+               
             <!-- Close button -->
             <button id="closeModal" class="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
                 Close
             </button>
+<button id="logout" class="mt-4 px-2 py-2 bg-red-500 text-white rounded hover:bg-red-600 ">Logout</button>
+
         </div>
     </div>
     
@@ -115,7 +225,6 @@
         <button id="deleteAll" class="ml-2  text-green-800 font-bold py-2 px-4 rounded  flex items-center">
             <i class="fas fa-trash"></i>
           </button>
-          <button id="logout" class="ml-2  text-green-800 font-bold py-2 px-4 rounded  flex items-center"><i class="fas fa-sign-out-alt"></i></button>
      
   
       
